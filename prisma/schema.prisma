@@ -1,0 +1,130 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model SuperAdmin {
+  matriculationNumber String  @id @unique @db.VarChar(255)
+  username String   @unique @db.VarChar(255)
+  users   User[]
+  orders Order[]
+  materials Material[]
+  vehicle Vehicle[]
+  itinerary Itinerary[]
+  shipment Shipment[]
+}
+
+model User {
+  matriculationNumber String  @id @unique @db.VarChar(255)
+  UserName String   @unique @db.VarChar(255)
+  UserRole String    @db.VarChar(255)
+  UserTitle String    @db.VarChar(255)
+  matriculationNumberSadmin String   @db.VarChar(255)
+  superAdmin      SuperAdmin @relation(fields: [matriculationNumberSadmin], references: [matriculationNumber])
+}
+
+model Supplier{
+  SupplierId String  @id @unique @db.VarChar(255) 
+  SupplierName String   @unique @db.VarChar(255)
+  recoit Recoit[]
+}
+
+model Order{
+  id        Int      @id @default(autoincrement())
+  MaterialName String    @db.VarChar(255)
+  DateOf_Order DateTime @default(now())
+  Quantity String    @db.VarChar(20)
+  DeliveryDate String
+  matriculationNumberSadmin String   @db.VarChar(255)
+  superAdmin      SuperAdmin @relation(fields: [matriculationNumberSadmin], references: [matriculationNumber])
+  recoit Recoit[]
+}
+
+
+model Recoit {
+  supplier Supplier @relation(fields: [supplierId], references: [SupplierId])
+  supplierId String
+  order Order @relation(fields: [orderId], references: [id])
+  orderId Int
+
+  @@unique([supplierId, orderId])
+}
+
+model Material{
+id        Int      @id @default(autoincrement())
+MaterialName String    @db.VarChar(255)
+RelatedShipment String    @db.VarChar(255)
+InitialQte String    @db.VarChar(20)
+Date DateTime @default(now())
+CurrentQte String?    @db.VarChar(20)
+matriculationNumberSadmin String   @db.VarChar(255)
+superAdmin      SuperAdmin @relation(fields: [matriculationNumberSadmin], references: [matriculationNumber])
+}
+
+model Vehicle {
+  VehicleRegistrationNumber String  @id @unique @db.VarChar(255)
+  VehicleName  String    @db.VarChar(255)
+  StartOfUse DateTime @default(now())
+  VehicleCondition String?    @db.VarChar(6)
+  MaintenanceDate String?  @db.VarChar(12)
+  matriculationNumberSadmin String   @db.VarChar(255)
+  superAdmin      SuperAdmin @relation(fields: [matriculationNumberSadmin], references: [matriculationNumber])
+  driver Driver[]
+}
+
+
+model Itinerary{
+id        Int      @id @default(autoincrement())
+RouteName String    @db.VarChar(255)
+RouteDescription String    @db.VarChar(255)
+RelatedMaterial String    @db.VarChar(255)
+matriculationNumberSadmin String   @db.VarChar(255)
+superAdmin      SuperAdmin @relation(fields: [matriculationNumberSadmin], references: [matriculationNumber])
+}
+
+model Shipment{
+id        Int      @id @default(autoincrement())
+ShipmentTitle String    @db.VarChar(255)
+ShipmentDescription String    @db.VarChar(255)
+BeginDate DateTime @default(now())
+EndDate String
+matriculationNumberSadmin String   @db.VarChar(255)
+superAdmin      SuperAdmin @relation(fields: [matriculationNumberSadmin], references: [matriculationNumber])
+shipmentTasks ShipmentTasks[]
+Participant Participant[]
+}
+
+model ShipmentTasks{
+id        Int      @id @default(autoincrement())
+TaskDescription   String    @db.VarChar(255)
+Taskstate String    @db.VarChar(20)
+ShipmentId  Int    
+shipment Shipment @relation(fields: [ShipmentId], references: [id])
+}
+
+model Driver{
+id Int      @id @default(autoincrement())
+DriverName String    @db.VarChar(20)
+VehicleRegistrationNumber String @db.VarChar(255)
+vehicle Vehicle @relation(fields: [VehicleRegistrationNumber],references: [VehicleRegistrationNumber])
+}
+
+model Participant {
+  id        Int      @id @default(autoincrement())
+  ParticipantName String @db.VarChar(255)
+  ParticipantRole String @db.VarChar(255)
+  ShipmentId Int 
+  shipment   Shipment @relation(fields: [ShipmentId], references: [id])
+}
+

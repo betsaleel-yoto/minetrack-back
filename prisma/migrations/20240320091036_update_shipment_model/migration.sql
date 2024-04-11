@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Shipment" ALTER COLUMN "EndDate" SET DATA TYPE TEXT;

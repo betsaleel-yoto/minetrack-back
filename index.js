@@ -19,7 +19,7 @@ const cors=require('cors')
 app.use(cors({
   origin:'https://frontend-minetrack1.vercel.app/'
 }))
-
+console.log('le cors est bon')
 
 
 app.use(express.json());

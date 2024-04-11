@@ -2,14 +2,15 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const {textValidator}=require('../validation/TextValidation')
 
-const getAll =  async(req,res)=>{
-  try {
-    const Materials = await prisma.Material.findMany();
-    return res.status(201).json(Materials) ;
-  } catch (error) {
-    console.error('Erreur lors de la récupération des Materials :', error);
-    throw error;
-  }
+const getAll = (req,res)=>{
+  res.send('salut')
+  // try {
+  //   const Materials = await prisma.Material.findMany();
+  //   return res.status(201).json(Materials) ;
+  // } catch (error) {
+  //   console.error('Erreur lors de la récupération des Materials :', error);
+  //   throw error;
+  // }
 }
 
 const edit = async (req, res) => {

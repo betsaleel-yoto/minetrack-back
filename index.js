@@ -17,7 +17,7 @@ const cors=require('cors')
 // route
 
 app.use(cors({
-  origin:'http://localhost:5173'
+  origin:'https://frontend-minetrack1.vercel.app/'
 }))
 
 
